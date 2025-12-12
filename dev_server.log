@@ -1,0 +1,18 @@
+
+> manager@0.1.0 dev
+> next dev --webpack
+
+ ⚠ Port 3000 is in use by an unknown process, using available port 3003 instead.
+   ▲ Next.js 16.0.8 (webpack)
+   - Local:         http://localhost:3003
+   - Network:       http://192.168.0.2:3003
+
+ ✓ Starting...
+ ✓ (pwa) Compiling for server...
+ ✓ (pwa) Compiling for server...
+ ✓ (pwa) Compiling for client (static)...
+ ○ (pwa) Service worker: /app/manager/public/sw.js
+ ○ (pwa)   URL: /sw.js
+ ○ (pwa)   Scope: /
+ ○ (pwa) Building in development mode, caching and precaching are disabled for the most part. This means that offline support is disabled, but you can continue developing other functions in service worker.
+ ✓ Ready in 3.4s
