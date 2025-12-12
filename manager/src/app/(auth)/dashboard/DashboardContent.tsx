@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { TaskList, AddTaskForm } from '@/features/tasks';
+import { TaskList, AddTaskForm, QuickAddTask } from '@/features/tasks';
 import styles from './dashboard.module.css';
 
 export function DashboardContent() {
@@ -12,13 +12,18 @@ export function DashboardContent() {
   };
 
   return (
-    <div className={styles.taskLayout}>
-      <aside className={styles.sidebar}>
-        <AddTaskForm onTaskAdded={handleTaskAdded} />
-      </aside>
-      <main className={styles.main}>
-        <TaskList refreshKey={refreshKey} />
-      </main>
-    </div>
+    <>
+      <div className={styles.quickActions}>
+        <QuickAddTask onTaskAdded={handleTaskAdded} />
+      </div>
+      <div className={styles.taskLayout}>
+        <aside className={styles.sidebar}>
+          <AddTaskForm onTaskAdded={handleTaskAdded} />
+        </aside>
+        <main className={styles.main}>
+          <TaskList refreshKey={refreshKey} />
+        </main>
+      </div>
+    </>
   );
 }

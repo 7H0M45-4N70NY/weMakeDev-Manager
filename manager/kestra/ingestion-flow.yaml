@@ -1,0 +1,138 @@
+# Kestra Workflow: Task Ingestion Flow
+# Processes raw text input and creates structured tasks in the database
+#
+# Usage:
+# 1. Deploy this workflow to your Kestra instance
+# 2. Configure environment variables in Kestra:
+#    - SUPABASE_URL: Your Supabase project URL
+#    - SUPABASE_SERVICE_ROLE_KEY: Service role key for database access
+# 3. Trigger via API or the Manager app's ingestion webhook
+
+id: task-ingestion
+namespace: manager
+description: |
+  Ingestion flow for raw task inputs.
+  Parses natural language text and creates structured tasks in Supabase.
+
+labels:
+  project: manager
+  type: ingestion
+
+inputs:
+  - id: user_id
+    type: STRING
+    required: true
+    description: The authenticated user's ID
+
+  - id: raw_text
+    type: STRING
+    required: true
+    description: Raw text input to parse (e.g., "Call mom tomorrow urgent")
+
+variables:
+  supabase_url: "{{ env.SUPABASE_URL }}"
+  supabase_key: "{{ env.SUPABASE_SERVICE_ROLE_KEY }}"
+
+tasks:
+  - id: parse_task
+    type: io.kestra.plugin.scripts.python.Script
+    description: Parse raw text into structured task data
+    docker:
+      image: python:3.11-slim
+    script: |
+      import re
+      import json
+      from datetime import datetime, timedelta
+      
+      raw_text = """{{ inputs.raw_text }}"""
+      
+      # Initialize result
+      title = raw_text.strip()
+      deadline = None
+      priority = 0
+      
+      # Deadline patterns
+      deadline_patterns = {
+          'today': (r'\b(today|tonight)\b', 0),
+          'tomorrow': (r'\b(tomorrow|tmr|tmrw)\b', 1),
+          'next_week': (r'\b(next week)\b', 7),
+      }
+      
+      for key, (pattern, days) in deadline_patterns.items():
+          if re.search(pattern, raw_text, re.IGNORECASE):
+              deadline_date = datetime.now() + timedelta(days=days)
+              deadline = deadline_date.strftime('%Y-%m-%dT17:00:00Z')
+              title = re.sub(pattern, '', title, flags=re.IGNORECASE).strip()
+              break
+      
+      # Priority patterns
+      if re.search(r'\b(urgent|asap|critical)\b', raw_text, re.IGNORECASE):
+          priority = 10
+          title = re.sub(r'\b(urgent|asap|critical)\b', '', title, flags=re.IGNORECASE).strip()
+      elif re.search(r'\b(important|high)\b', raw_text, re.IGNORECASE):
+          priority = 7
+          title = re.sub(r'\b(important|high)\b', '', title, flags=re.IGNORECASE).strip()
+      
+      # Clean up title
+      title = re.sub(r'\s+', ' ', title).strip()
+      title = re.sub(r'^[\s:,\-]+|[\s:,\-]+$', '', title)
+      
+      # Ensure title is not empty
+      if not title:
+          title = raw_text.strip()
+      
+      result = {
+          "title": title[:255],  # Max 255 chars
+          "deadline": deadline,
+          "priority": priority,
+          "status": "pending"
+      }
+      
+      print(json.dumps(result))
+    outputFiles:
+      - "*.json"
+
+  - id: create_task
+    type: io.kestra.plugin.http.Request
+    description: Create task in Supabase database
+    uri: "{{ vars.supabase_url }}/rest/v1/tasks"
+    method: POST
+    headers:
+      Authorization: "Bearer {{ vars.supabase_key }}"
+      apikey: "{{ vars.supabase_key }}"
+      Content-Type: "application/json"
+      Prefer: "return=representation"
+    body: |
+      {
+        "user_id": "{{ inputs.user_id }}",
+        "title": {{ outputs.parse_task.vars.title | json }},
+        "deadline": {{ outputs.parse_task.vars.deadline | json }},
+        "priority": {{ outputs.parse_task.vars.priority }},
+        "status": "pending"
+      }
+
+  - id: log_result
+    type: io.kestra.plugin.core.log.Log
+    description: Log the created task for debugging
+    message: |
+      Task created successfully:
+      - User: {{ inputs.user_id }}
+      - Title: {{ outputs.parse_task.vars.title }}
+      - Priority: {{ outputs.parse_task.vars.priority }}
+      - Deadline: {{ outputs.parse_task.vars.deadline }}
+
+errors:
+  - id: handle_error
+    type: io.kestra.plugin.core.log.Log
+    level: ERROR
+    message: |
+      Task ingestion failed:
+      - User: {{ inputs.user_id }}
+      - Input: {{ inputs.raw_text }}
+      - Error: {{ error.message }}
+
+triggers:
+  # Optional: Schedule for batch processing
+  # - id: daily_batch
+  #   type: io.kestra.plugin.core.trigger.Schedule
+  #   cron: "0 9 * * *"

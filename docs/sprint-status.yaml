@@ -36,16 +36,16 @@ tracking_system: file-system
 story_location: d:\Thomas\PERSONAL\Projects\webuilddev\docs\stories
 
 development_status:
-  epic-1: in-progress
+  epic-1: done
   1-1-project-initialization-pwa-configuration: done
   1-2-supabase-database-auth-setup: done
   1-3-authentication-ui-protected-layout: done
   epic-1-retrospective: optional
 
-  epic-2: in-progress
+  epic-2: done
   2-1-task-data-model-api: done
   2-2-task-dashboard-management-ui: done
-  2-3-kestra-ingestion-flow: backlog
+  2-3-kestra-ingestion-flow: done
   epic-2-retrospective: optional
 
   epic-3: backlog
