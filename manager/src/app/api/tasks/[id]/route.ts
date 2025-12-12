@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 import { getUser } from '@/lib/auth';
 import { getTaskById, updateTask, deleteTask } from '@/lib/db/tasks';
 import { UpdateTaskInput } from '@/types/task';
@@ -14,7 +14,7 @@ const updateTaskSchema = z.object({
 });
 
 export async function GET(
-  request: NextRequest,
+  request: Request,
   { params }: { params: { id: string } }
 ) {
   try {
@@ -38,7 +38,7 @@ export async function GET(
 }
 
 export async function PUT(
-  request: NextRequest,
+  request: Request,
   { params }: { params: { id: string } }
 ) {
   try {
@@ -69,7 +69,7 @@ export async function PUT(
 }
 
 export async function DELETE(
-  request: NextRequest,
+  request: Request,
   { params }: { params: { id: string } }
 ) {
   try {

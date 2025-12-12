@@ -28,8 +28,7 @@ export async function getTasksByUser(
   const { data, error } = await query
     .order('deadline', { ascending: true, nullsFirst: false })
     .order('priority', { ascending: false })
-    .limit(params?.limit || 100)
-    .offset(params?.offset || 0);
+    .range(params?.offset || 0, (params?.offset || 0) + (params?.limit || 100) - 1);
 
   if (error) throw error;
   return data as Task[];
