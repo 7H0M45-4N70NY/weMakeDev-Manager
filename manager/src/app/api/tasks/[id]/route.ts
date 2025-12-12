@@ -15,7 +15,7 @@ const updateTaskSchema = z.object({
 
 export async function GET(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const user = await getUser();
@@ -23,7 +23,8 @@ export async function GET(
       return NextResponse.json(errorResponse('Unauthorized'), { status: 401 });
     }
 
-    const task = await getTaskById(params.id, user.id);
+    const { id } = await params;
+    const task = await getTaskById(id, user.id);
     return NextResponse.json(successResponse(task));
   } catch (error: any) {
     if (error?.code === 'PGRST116') {
@@ -39,7 +40,7 @@ export async function GET(
 
 export async function PUT(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const user = await getUser();
@@ -47,10 +48,11 @@ export async function PUT(
       return NextResponse.json(errorResponse('Unauthorized'), { status: 401 });
     }
 
+    const { id } = await params;
     const body = await request.json();
     const input = updateTaskSchema.parse(body);
 
-    const task = await updateTask(params.id, user.id, input);
+    const task = await updateTask(id, user.id, input);
     return NextResponse.json(successResponse(task));
   } catch (error: any) {
     if (error instanceof z.ZodError) {
@@ -70,7 +72,7 @@ export async function PUT(
 
 export async function DELETE(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const user = await getUser();
@@ -78,10 +80,11 @@ export async function DELETE(
       return NextResponse.json(errorResponse('Unauthorized'), { status: 401 });
     }
 
+    const { id } = await params;
     // Verify task exists and belongs to user
-    await getTaskById(params.id, user.id);
+    await getTaskById(id, user.id);
 
-    await deleteTask(params.id, user.id);
+    await deleteTask(id, user.id);
     return NextResponse.json(
       successResponse({ message: 'Task deleted successfully' })
     );

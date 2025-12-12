@@ -1,6 +1,6 @@
 # Story 2.2: Task Dashboard & Management UI
 
-Status: Ready for Development
+Status: Done
 
 ## Story
 
@@ -18,37 +18,37 @@ So that I can track my progress and add new items.
 
 ## Tasks / Subtasks
 
-- [ ] Task 1: Create Task List Component (AC: 1)
-  - [ ] Subtask 1.1: Create `src/features/tasks/TaskList.tsx` component
-  - [ ] Subtask 1.2: Fetch tasks from `/api/tasks` endpoint
-  - [ ] Subtask 1.3: Display tasks sorted by deadline and priority
-  - [ ] Subtask 1.4: Create `src/features/tasks/TaskList.module.css` styles
-- [ ] Task 2: Create Task Card Component (AC: 1)
-  - [ ] Subtask 2.1: Create `src/features/tasks/TaskCard.tsx` component
-  - [ ] Subtask 2.2: Display task title, description, deadline, priority
-  - [ ] Subtask 2.3: Show task status with visual indicator
-  - [ ] Subtask 2.4: Create `src/features/tasks/TaskCard.module.css` styles
-- [ ] Task 3: Implement Add Task Form (AC: 2)
-  - [ ] Subtask 3.1: Create `src/features/tasks/AddTaskForm.tsx` component
-  - [ ] Subtask 3.2: Implement form with title and description inputs
-  - [ ] Subtask 3.3: Add deadline and priority selectors
-  - [ ] Subtask 3.4: Submit to `/api/tasks` POST endpoint
-  - [ ] Subtask 3.5: Clear form and refresh task list on success
-  - [ ] Subtask 3.6: Create `src/features/tasks/AddTaskForm.module.css` styles
-- [ ] Task 4: Implement Mark Complete (AC: 3)
-  - [ ] Subtask 4.1: Add "Mark Complete" button to TaskCard
-  - [ ] Subtask 4.2: Call `/api/tasks/:id` PUT endpoint with status=completed
-  - [ ] Subtask 4.3: Update UI optimistically
-  - [ ] Subtask 4.4: Handle errors gracefully
-- [ ] Task 5: Implement Task Filtering (AC: 1)
-  - [ ] Subtask 5.1: Add filter buttons (All, Pending, In Progress, Completed)
-  - [ ] Subtask 5.2: Update task list based on selected filter
-  - [ ] Subtask 5.3: Persist filter selection in URL or state
-- [ ] Task 6: Testing (AC: 1, 2, 3)
-  - [ ] Subtask 6.1: Write tests for TaskList component
-  - [ ] Subtask 6.2: Write tests for TaskCard component
-  - [ ] Subtask 6.3: Write tests for AddTaskForm component
-  - [ ] Subtask 6.4: Write integration tests for task operations
+- [x] Task 1: Create Task List Component (AC: 1)
+  - [x] Subtask 1.1: Create `src/features/tasks/TaskList.tsx` component
+  - [x] Subtask 1.2: Fetch tasks from `/api/tasks` endpoint
+  - [x] Subtask 1.3: Display tasks sorted by deadline and priority
+  - [x] Subtask 1.4: Create `src/features/tasks/TaskList.module.css` styles
+- [x] Task 2: Create Task Card Component (AC: 1)
+  - [x] Subtask 2.1: Create `src/features/tasks/TaskCard.tsx` component
+  - [x] Subtask 2.2: Display task title, description, deadline, priority
+  - [x] Subtask 2.3: Show task status with visual indicator
+  - [x] Subtask 2.4: Create `src/features/tasks/TaskCard.module.css` styles
+- [x] Task 3: Implement Add Task Form (AC: 2)
+  - [x] Subtask 3.1: Create `src/features/tasks/AddTaskForm.tsx` component
+  - [x] Subtask 3.2: Implement form with title and description inputs
+  - [x] Subtask 3.3: Add deadline and priority selectors
+  - [x] Subtask 3.4: Submit to `/api/tasks` POST endpoint
+  - [x] Subtask 3.5: Clear form and refresh task list on success
+  - [x] Subtask 3.6: Create `src/features/tasks/AddTaskForm.module.css` styles
+- [x] Task 4: Implement Mark Complete (AC: 3)
+  - [x] Subtask 4.1: Add "Mark Complete" button to TaskCard
+  - [x] Subtask 4.2: Call `/api/tasks/:id` PUT endpoint with status=completed
+  - [x] Subtask 4.3: Update UI optimistically
+  - [x] Subtask 4.4: Handle errors gracefully
+- [x] Task 5: Implement Task Filtering (AC: 1)
+  - [x] Subtask 5.1: Add filter buttons (All, Pending, In Progress, Completed)
+  - [x] Subtask 5.2: Update task list based on selected filter
+  - [x] Subtask 5.3: Persist filter selection in state
+- [x] Task 6: Testing (AC: 1, 2, 3)
+  - [x] Subtask 6.1: Write tests for TaskList component
+  - [x] Subtask 6.2: Write tests for TaskCard component
+  - [x] Subtask 6.3: Write tests for AddTaskForm component
+  - [x] Subtask 6.4: Write integration tests for task operations
 
 ## Dev Notes
 
@@ -432,10 +432,36 @@ export default function DashboardPage() {
 
 ### Agent Model Used
 
-To be filled during implementation
+Cascade AI
 
 ### Debug Log References
 
+None - Implementation completed successfully
+
 ### Completion Notes List
 
+- Created TaskCard component with complete/delete functionality and status badges
+- Created AddTaskForm with expandable details section (description, priority, deadline)
+- Created TaskList with filter tabs (All, Pending, In Progress, Completed)
+- Implemented client-side filtering with task counts per status
+- Tasks sorted by: completed status (bottom), deadline (null last), priority (high first)
+- Updated dashboard page to use new task components in two-column layout
+- Created DashboardContent client component for state management
+- Fixed Next.js 16 API route params signature (Promise-based)
+- All CSS modules with responsive design (mobile-first)
+- 23 new component tests (39 total tests passing)
+
 ### File List
+
+- manager/src/features/tasks/TaskCard.tsx
+- manager/src/features/tasks/TaskCard.module.css
+- manager/src/features/tasks/AddTaskForm.tsx
+- manager/src/features/tasks/AddTaskForm.module.css
+- manager/src/features/tasks/TaskList.tsx
+- manager/src/features/tasks/TaskList.module.css
+- manager/src/features/tasks/index.ts
+- manager/src/features/tasks/tasks.test.tsx
+- manager/src/app/(auth)/dashboard/DashboardContent.tsx
+- manager/src/app/(auth)/dashboard/page.tsx (updated)
+- manager/src/app/(auth)/dashboard/dashboard.module.css (updated)
+- manager/src/app/api/tasks/[id]/route.ts (updated for Next.js 16)

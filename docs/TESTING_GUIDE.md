@@ -34,7 +34,7 @@ Comprehensive testing strategy for the Manager application covering unit tests, 
 
 ```bash
 # Run all tests
-npm run test
+DD
 
 # Run tests in watch mode
 npm run test:watch
