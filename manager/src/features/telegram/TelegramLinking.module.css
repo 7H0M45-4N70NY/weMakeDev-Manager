@@ -1,0 +1,200 @@
+.container {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+.container h2 {
+  margin-bottom: 1.5rem;
+  color: #1a1a1a;
+}
+
+.status {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  background: #f5f5f5;
+  border-radius: 8px;
+  padding: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.label {
+  font-weight: 500;
+  color: #666;
+}
+
+.badge {
+  padding: 0.25rem 0.75rem;
+  border-radius: 12px;
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.badge.linked {
+  background: #d4edda;
+  color: #155724;
+}
+
+.badge.notLinked {
+  background: #f8d7da;
+  color: #721c24;
+}
+
+.message {
+  padding: 1rem;
+  border-radius: 8px;
+  margin-bottom: 1.5rem;
+}
+
+.message.success {
+  background: #d4edda;
+  color: #155724;
+  border: 1px solid #c3e6cb;
+}
+
+.message.error {
+  background: #f8d7da;
+  color: #721c24;
+  border: 1px solid #f5c6cb;
+}
+
+.description {
+  color: #666;
+  line-height: 1.6;
+  margin-bottom: 1.5rem;
+}
+
+.primaryButton,
+.dangerButton {
+  width: 100%;
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.primaryButton {
+  background: #007bff;
+  color: white;
+}
+
+.primaryButton:hover:not(:disabled) {
+  background: #0056b3;
+}
+
+.dangerButton {
+  background: #dc3545;
+  color: white;
+}
+
+.dangerButton:hover:not(:disabled) {
+  background: #c82333;
+}
+
+.primaryButton:disabled,
+.dangerButton:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.linkingInstructions {
+  background: #f8f9fa;
+  border: 1px solid #dee2e6;
+  border-radius: 8px;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.linkingInstructions h3 {
+  margin-top: 0;
+  margin-bottom: 1rem;
+  color: #1a1a1a;
+}
+
+.linkingInstructions ol {
+  margin-bottom: 1rem;
+  padding-left: 1.5rem;
+  color: #666;
+}
+
+.linkingInstructions li {
+  margin-bottom: 0.5rem;
+}
+
+.codeBlock {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: #1a1a1a;
+  color: #fff;
+  padding: 1rem;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+  font-family: 'Courier New', monospace;
+}
+
+.codeBlock code {
+  flex: 1;
+  font-size: 0.875rem;
+}
+
+.copyButton {
+  padding: 0.5rem 1rem;
+  background: #007bff;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.copyButton:hover {
+  background: #0056b3;
+}
+
+.note {
+  color: #856404;
+  background: #fff3cd;
+  border: 1px solid #ffeaa7;
+  padding: 0.75rem;
+  border-radius: 6px;
+  font-size: 0.875rem;
+  margin: 0;
+}
+
+.features {
+  background: #e7f3ff;
+  border: 1px solid #b3d9ff;
+  border-radius: 8px;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.features h3 {
+  margin-top: 0;
+  margin-bottom: 1rem;
+  color: #004085;
+}
+
+.features ul {
+  margin: 0;
+  padding-left: 1.5rem;
+  color: #004085;
+}
+
+.features li {
+  margin-bottom: 0.75rem;
+}
+
+.features code {
+  background: rgba(0, 0, 0, 0.1);
+  padding: 0.2rem 0.4rem;
+  border-radius: 4px;
+  font-family: 'Courier New', monospace;
+  font-size: 0.875rem;
+}

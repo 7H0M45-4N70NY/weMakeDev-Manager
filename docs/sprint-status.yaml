@@ -48,10 +48,10 @@ development_status:
   2-3-kestra-ingestion-flow: done
   epic-2-retrospective: optional
 
-  epic-3: backlog
-  3-1-push-notification-infrastructure: backlog
-  3-2-notification-settings-subscription: backlog
-  3-3-telegram-bot-setup-linking: backlog
+  epic-3: done
+  3-1-push-notification-infrastructure: done
+  3-2-notification-settings-subscription: done
+  3-3-telegram-bot-setup-linking: done
   epic-3-retrospective: optional
 
   epic-4: backlog
