@@ -2,7 +2,7 @@
  * @jest-environment jsdom
  */
 import '@testing-library/jest-dom';
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor, act } from '@testing-library/react';
 import { TaskCard } from './TaskCard';
 import { AddTaskForm } from './AddTaskForm';
 import { TaskList } from './TaskList';
@@ -77,7 +77,9 @@ describe('TaskCard', () => {
     render(<TaskCard task={mockTask} onUpdate={mockOnUpdate} />);
     
     const completeButton = screen.getByRole('button', { name: /complete/i });
-    fireEvent.click(completeButton);
+    act(() => {
+      fireEvent.click(completeButton);
+    });
 
     await waitFor(() => {
       expect(mockFetch).toHaveBeenCalledWith(
@@ -103,7 +105,9 @@ describe('TaskCard', () => {
     render(<TaskCard task={mockTask} onUpdate={mockOnUpdate} />);
     
     const completeButton = screen.getByRole('button', { name: /complete/i });
-    fireEvent.click(completeButton);
+    act(() => {
+      fireEvent.click(completeButton);
+    });
 
     await waitFor(() => {
       expect(screen.getByText('Failed to update')).toBeInTheDocument();
@@ -120,7 +124,9 @@ describe('TaskCard', () => {
     render(<TaskCard task={mockTask} onUpdate={mockOnUpdate} />);
     
     const deleteButton = screen.getByRole('button', { name: /delete/i });
-    fireEvent.click(deleteButton);
+    act(() => {
+      fireEvent.click(deleteButton);
+    });
 
     await waitFor(() => {
       expect(mockFetch).toHaveBeenCalledWith(
@@ -136,7 +142,9 @@ describe('TaskCard', () => {
     render(<TaskCard task={mockTask} onUpdate={mockOnUpdate} />);
     
     const deleteButton = screen.getByRole('button', { name: /delete/i });
-    fireEvent.click(deleteButton);
+    act(() => {
+      fireEvent.click(deleteButton);
+    });
 
     expect(mockFetch).not.toHaveBeenCalled();
   });
@@ -165,7 +173,9 @@ describe('AddTaskForm', () => {
   it('expands to show additional fields when clicked', () => {
     render(<AddTaskForm onTaskAdded={mockOnTaskAdded} />);
     
-    fireEvent.click(screen.getByText(/add details/i));
+    act(() => {
+      fireEvent.click(screen.getByText(/add details/i));
+    });
     
     expect(screen.getByLabelText(/description/i)).toBeInTheDocument();
     expect(screen.getByLabelText(/priority/i)).toBeInTheDocument();
@@ -181,10 +191,14 @@ describe('AddTaskForm', () => {
     render(<AddTaskForm onTaskAdded={mockOnTaskAdded} />);
     
     const titleInput = screen.getByLabelText(/task title/i);
-    fireEvent.change(titleInput, { target: { value: 'New Task' } });
+    act(() => {
+      fireEvent.change(titleInput, { target: { value: 'New Task' } });
+    });
     
     const submitButton = screen.getByRole('button', { name: /add task/i });
-    fireEvent.click(submitButton);
+    act(() => {
+      fireEvent.click(submitButton);
+    });
 
     await waitFor(() => {
       expect(mockFetch).toHaveBeenCalledWith(
@@ -210,8 +224,10 @@ describe('AddTaskForm', () => {
     render(<AddTaskForm onTaskAdded={mockOnTaskAdded} />);
     
     const titleInput = screen.getByLabelText(/task title/i) as HTMLInputElement;
-    fireEvent.change(titleInput, { target: { value: 'New Task' } });
-    fireEvent.click(screen.getByRole('button', { name: /add task/i }));
+    act(() => {
+      fireEvent.change(titleInput, { target: { value: 'New Task' } });
+      fireEvent.click(screen.getByRole('button', { name: /add task/i }));
+    });
 
     await waitFor(() => {
       expect(titleInput.value).toBe('');
@@ -227,8 +243,10 @@ describe('AddTaskForm', () => {
     render(<AddTaskForm onTaskAdded={mockOnTaskAdded} />);
     
     const titleInput = screen.getByLabelText(/task title/i);
-    fireEvent.change(titleInput, { target: { value: 'Test' } });
-    fireEvent.click(screen.getByRole('button', { name: /add task/i }));
+    act(() => {
+      fireEvent.change(titleInput, { target: { value: 'Test' } });
+      fireEvent.click(screen.getByRole('button', { name: /add task/i }));
+    });
 
     await waitFor(() => {
       expect(screen.getByText('Title is required')).toBeInTheDocument();
@@ -246,7 +264,7 @@ describe('AddTaskForm', () => {
 describe('TaskList', () => {
   const mockTasks: Task[] = [
     {
-      id: '1',
+      id: 'task-1',
       user_id: 'user-1',
       title: 'Task 1',
       description: null,
@@ -257,7 +275,7 @@ describe('TaskList', () => {
       updated_at: '2025-12-10T10:00:00Z',
     },
     {
-      id: '2',
+      id: 'task-2',
       user_id: 'user-1',
       title: 'Task 2',
       description: null,
@@ -287,11 +305,12 @@ describe('TaskList', () => {
       json: async () => ({ success: true, data: mockTasks }),
     });
 
-    render(<TaskList />);
-
-    await waitFor(() => {
-      expect(screen.getByText('Task 1')).toBeInTheDocument();
-      expect(screen.getByText('Task 2')).toBeInTheDocument();
+    await act(async () => {
+      render(<TaskList />);
+      await waitFor(() => {
+        expect(screen.getByText('Task 1')).toBeInTheDocument();
+        expect(screen.getByText('Task 2')).toBeInTheDocument();
+      });
     });
   });
 
@@ -301,10 +320,11 @@ describe('TaskList', () => {
       json: async () => ({ success: true, data: [] }),
     });
 
-    render(<TaskList />);
-
-    await waitFor(() => {
-      expect(screen.getByText(/no tasks yet/i)).toBeInTheDocument();
+    await act(async () => {
+      render(<TaskList />);
+      await waitFor(() => {
+        expect(screen.getByText(/no tasks yet/i)).toBeInTheDocument();
+      });
     });
   });
 
@@ -313,10 +333,11 @@ describe('TaskList', () => {
       ok: false,
     });
 
-    render(<TaskList />);
-
-    await waitFor(() => {
-      expect(screen.getByText(/failed to fetch/i)).toBeInTheDocument();
+    await act(async () => {
+      render(<TaskList />);
+      await waitFor(() => {
+        expect(screen.getByText(/failed to fetch/i)).toBeInTheDocument();
+      });
     });
   });
 
@@ -326,37 +347,115 @@ describe('TaskList', () => {
       json: async () => ({ success: true, data: mockTasks }),
     });
 
-    render(<TaskList />);
-
-    await waitFor(() => {
-      expect(screen.getByRole('tab', { name: /all/i })).toBeInTheDocument();
-      expect(screen.getByRole('tab', { name: /pending/i })).toBeInTheDocument();
-      expect(screen.getByRole('tab', { name: /completed/i })).toBeInTheDocument();
+    await act(async () => {
+      render(<TaskList />);
+      await waitFor(() => {
+        expect(screen.getByRole('tab', { name: /all/i })).toBeInTheDocument();
+        expect(screen.getByRole('tab', { name: /pending/i })).toBeInTheDocument();
+        expect(screen.getByRole('tab', { name: /completed/i })).toBeInTheDocument();
+      });
     });
   });
 
   it('filters tasks when filter button clicked', async () => {
     // First fetch returns all tasks
-    mockFetch.mockResolvedValue({
+    mockFetch.mockResolvedValueOnce({
       ok: true,
       json: async () => ({ success: true, data: mockTasks }),
     });
 
-    render(<TaskList />);
-
-    // Wait for initial load
-    await waitFor(() => {
-      expect(screen.getByText('Task 1')).toBeInTheDocument();
-      expect(screen.getByText('Task 2')).toBeInTheDocument();
+    await act(async () => {
+      render(<TaskList />);
+      await waitFor(() => {
+        expect(screen.getByText('Task 1')).toBeInTheDocument();
+        expect(screen.getByText('Task 2')).toBeInTheDocument();
+      });
     });
 
-    // Click completed filter - filtering happens client-side
-    fireEvent.click(screen.getByRole('tab', { name: /completed/i }));
+    // Mock the API call for the "Completed" filter
+    mockFetch.mockResolvedValueOnce({
+      ok: true,
+      json: async () => ({
+        success: true,
+        data: [mockTasks.find(t => t.status === 'completed')],
+      }),
+    });
 
-    // Wait for filter to apply - Task 1 (pending) should be hidden, Task 2 (completed) should show
-    await waitFor(() => {
-      expect(screen.queryByText('Task 1')).not.toBeInTheDocument();
-      expect(screen.getByText('Task 2')).toBeInTheDocument();
+    // Click completed filter
+    await act(async () => {
+      fireEvent.click(screen.getByRole('tab', { name: /completed/i }));
+      await waitFor(() => {
+        expect(screen.queryByText('Task 1')).not.toBeInTheDocument();
+        expect(screen.getByText('Task 2')).toBeInTheDocument();
+      });
+    });
+  });
+
+  it('searches tasks when search form submitted', async () => {
+    mockFetch.mockResolvedValueOnce({
+      ok: true,
+      json: async () => ({ success: true, data: mockTasks }),
+    });
+
+    await act(async () => {
+      render(<TaskList />);
+      await waitFor(() => {
+        expect(screen.getByText('Task 1')).toBeInTheDocument();
+      });
+    });
+
+    mockFetch.mockResolvedValueOnce({
+      ok: true,
+      json: async () => ({
+        success: true,
+        data: [mockTasks.find(t => t.title === 'Task 2')],
+      }),
+    });
+
+    await act(async () => {
+      fireEvent.change(screen.getByPlaceholderText(/search tasks/i), {
+        target: { value: 'Task 2' },
+      });
+      fireEvent.click(screen.getByRole('button', { name: /search/i }));
+      await waitFor(() => {
+        expect(mockFetch).toHaveBeenCalledWith('/api/tasks?search=Task%202&offset=0');
+        expect(screen.queryByText('Task 1')).not.toBeInTheDocument();
+        expect(screen.getByText('Task 2')).toBeInTheDocument();
+      });
+    });
+  });
+
+  it('loads more tasks when load more button clicked', async () => {
+    mockFetch.mockResolvedValueOnce({
+      ok: true,
+      json: async () => ({ success: true, data: mockTasks }),
+    });
+
+    await act(async () => {
+      render(<TaskList />);
+      await waitFor(() => {
+        expect(screen.getByText('Task 1')).toBeInTheDocument();
+      });
+    });
+
+    const newTask = {
+      id: 'task-3',
+      title: 'Task 3',
+      status: 'pending',
+      priority: 1,
+      deadline: null,
+    };
+    mockFetch.mockResolvedValueOnce({
+      ok: true,
+      json: async () => ({ success: true, data: [newTask] }),
+    });
+
+    await act(async () => {
+      fireEvent.click(screen.getByRole('button', { name: /load more/i }));
+      await waitFor(() => {
+        expect(mockFetch).toHaveBeenCalledWith('/api/tasks?offset=2');
+        expect(screen.getByText('Task 3')).toBeInTheDocument();
+      });
     });
   });
 
@@ -366,10 +465,11 @@ describe('TaskList', () => {
       json: async () => ({ success: true, data: mockTasks }),
     });
 
-    render(<TaskList />);
-
-    await waitFor(() => {
-      expect(screen.getByText('2 tasks')).toBeInTheDocument();
+    await act(async () => {
+      render(<TaskList />);
+      await waitFor(() => {
+        expect(screen.getByText(/2 tasks/i)).toBeInTheDocument();
+      });
     });
   });
 });

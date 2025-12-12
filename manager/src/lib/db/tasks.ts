@@ -21,6 +21,10 @@ export async function getTasksByUser(
     query = query.eq('status', params.status);
   }
 
+  if (params?.search) {
+    query = query.ilike('title', `%${params.search}%`);
+  }
+
   if (params?.priority !== undefined) {
     query = query.gte('priority', params.priority);
   }
@@ -59,7 +63,7 @@ export async function createTask(userId: string, input: CreateTaskInput) {
       description: input.description || null,
       priority: input.priority || 0,
       deadline: input.deadline || null,
-      status: 'pending',
+      status: input.status || 'pending',
     })
     .select()
     .single();

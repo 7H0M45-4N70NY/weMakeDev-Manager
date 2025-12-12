@@ -28,10 +28,11 @@ export async function GET(request: NextRequest) {
         : undefined,
       limit: searchParams.get('limit')
         ? parseInt(searchParams.get('limit')!)
-        : 100,
+        : 10,
       offset: searchParams.get('offset')
         ? parseInt(searchParams.get('offset')!)
         : 0,
+      search: searchParams.get('search') || undefined,
     };
 
     const tasks = await getTasksByUser(user.id, params);
@@ -53,6 +54,15 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json();
+
+    if (
+      body.deadline &&
+      typeof body.deadline === 'string' &&
+      /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}$/.test(body.deadline)
+    ) {
+      body.deadline = `${body.deadline}:00Z`;
+    }
+
     const input = createTaskSchema.parse(body);
 
     const task = await createTask(user.id, input);
