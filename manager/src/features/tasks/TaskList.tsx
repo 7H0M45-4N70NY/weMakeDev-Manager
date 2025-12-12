@@ -22,8 +22,11 @@ export function TaskList({ filter: initialFilter, refreshKey = 0 }: TaskListProp
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [activeFilter, setActiveFilter] = useState<TaskStatus | 'all'>(initialFilter || 'all');
+  const [searchQuery, setSearchQuery] = useState('');
+  const [offset, setOffset] = useState(0);
+  const [hasMore, setHasMore] = useState(true);
 
-  const fetchTasks = useCallback(async () => {
+  const fetchTasks = useCallback(async (isNewSearch = false) => {
     setLoading(true);
     setError(null);
     try {
@@ -31,6 +34,10 @@ export function TaskList({ filter: initialFilter, refreshKey = 0 }: TaskListProp
       if (activeFilter && activeFilter !== 'all') {
         params.append('status', activeFilter);
       }
+      if (searchQuery) {
+        params.append('search', searchQuery);
+      }
+      params.append('offset', isNewSearch ? '0' : offset.toString());
 
       const response = await fetch(`/api/tasks?${params}`);
       if (!response.ok) {
@@ -38,40 +45,33 @@ export function TaskList({ filter: initialFilter, refreshKey = 0 }: TaskListProp
       }
 
       const { data } = await response.json();
-      
-      // Sort by deadline (null last), then by priority (high first)
-      const sortedTasks = [...(data || [])].sort((a: Task, b: Task) => {
-        // Completed tasks go to bottom
-        if (a.status === 'completed' && b.status !== 'completed') return 1;
-        if (a.status !== 'completed' && b.status === 'completed') return -1;
-        
-        // Sort by deadline (null last)
-        if (a.deadline && !b.deadline) return -1;
-        if (!a.deadline && b.deadline) return 1;
-        if (a.deadline && b.deadline) {
-          const dateCompare = new Date(a.deadline).getTime() - new Date(b.deadline).getTime();
-          if (dateCompare !== 0) return dateCompare;
-        }
-        
-        // Then by priority (high first)
-        return b.priority - a.priority;
-      });
+      const newTasks = data || [];
 
-      setTasks(sortedTasks);
+      if (isNewSearch) {
+        setTasks(newTasks);
+        setOffset(newTasks.length);
+      } else {
+        setTasks(prevTasks => [...prevTasks, ...newTasks]);
+        setOffset(prevOffset => prevOffset + newTasks.length);
+      }
+      setHasMore(newTasks.length > 0);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to load tasks');
     } finally {
       setLoading(false);
     }
-  }, [activeFilter]);
+  }, [activeFilter, searchQuery, offset]);
 
   useEffect(() => {
-    fetchTasks();
-  }, [fetchTasks, refreshKey]);
+    fetchTasks(true);
+  }, [activeFilter, searchQuery, refreshKey]);
 
-  const filteredTasks = activeFilter === 'all' 
-    ? tasks 
-    : tasks.filter(task => task.status === activeFilter);
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    fetchTasks(true);
+  };
+
+  const filteredTasks = tasks;
 
   const taskCounts: Record<TaskStatus | 'all', number> = {
     all: tasks.length,
@@ -87,6 +87,17 @@ export function TaskList({ filter: initialFilter, refreshKey = 0 }: TaskListProp
         <h2 className={styles.heading}>Your Tasks</h2>
         <span className={styles.count}>{filteredTasks.length} task{filteredTasks.length !== 1 ? 's' : ''}</span>
       </div>
+
+      <form onSubmit={handleSearch} className={styles.searchForm}>
+        <input
+          type="text"
+          placeholder="Search tasks..."
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          className={styles.searchInput}
+        />
+        <button type="submit" className={styles.searchButton}>Search</button>
+      </form>
 
       <div className={styles.filters} role="tablist" aria-label="Filter tasks">
         {FILTER_OPTIONS.map(option => (
@@ -133,8 +144,20 @@ export function TaskList({ filter: initialFilter, refreshKey = 0 }: TaskListProp
       {!loading && !error && filteredTasks.length > 0 && (
         <div className={styles.list}>
           {filteredTasks.map(task => (
-            <TaskCard key={task.id} task={task} onUpdate={fetchTasks} />
+            <TaskCard key={task.id} task={task} onUpdate={() => fetchTasks(true)} />
           ))}
+        </div>
+      )}
+
+      {hasMore && !loading && (
+        <div className={styles.loadMoreContainer}>
+          <button
+            onClick={() => fetchTasks()}
+            disabled={loading}
+            className={styles.loadMoreButton}
+          >
+            {loading ? 'Loading...' : 'Load More'}
+          </button>
         </div>
       )}
     </div>

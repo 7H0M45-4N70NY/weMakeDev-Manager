@@ -76,9 +76,13 @@
 }
 
 .row {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
+  display: flex;
+  flex-wrap: wrap;
   gap: 1rem;
+}
+
+.row > * {
+  flex: 1 1 calc(50% - 0.5rem);
 }
 
 .expandButton {
@@ -140,10 +144,6 @@
 @media (max-width: 640px) {
   .form {
     padding: 1rem;
-  }
-
-  .row {
-    grid-template-columns: 1fr;
   }
 
   .input,

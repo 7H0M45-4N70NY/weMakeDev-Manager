@@ -13,14 +13,14 @@ export function TaskCard({ task, onUpdate }: TaskCardProps) {
   const [updating, setUpdating] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  async function handleComplete() {
+  async function handleUpdateStatus(status: Task['status']) {
     setUpdating(true);
     setError(null);
     try {
       const response = await fetch(`/api/tasks/${task.id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ status: 'completed' }),
+        body: JSON.stringify({ status }),
       });
 
       if (!response.ok) {
@@ -91,14 +91,24 @@ export function TaskCard({ task, onUpdate }: TaskCardProps) {
       {error && <p className={styles.error}>{error}</p>}
 
       <div className={styles.actions}>
-        {task.status !== 'completed' && (
+        {task.status === 'pending' && (
           <button
-            onClick={handleComplete}
+            onClick={() => handleUpdateStatus('in_progress')}
+            disabled={updating}
+            className={styles.startButton}
+            aria-label="Start task"
+          >
+            {updating ? 'Starting...' : '🚀 Start'}
+          </button>
+        )}
+        {task.status === 'in_progress' && (
+          <button
+            onClick={() => handleUpdateStatus('completed')}
             disabled={updating}
             className={styles.completeButton}
             aria-label="Mark task as complete"
           >
-            {updating ? 'Updating...' : '✓ Complete'}
+            {updating ? 'Completing...' : '✓ Complete'}
           </button>
         )}
         <button

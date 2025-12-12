@@ -17,6 +17,7 @@ export interface CreateTaskInput {
   description?: string;
   priority?: number;
   deadline?: string;
+  status?: TaskStatus;
 }
 
 export interface UpdateTaskInput {
@@ -32,4 +33,5 @@ export interface TaskQueryParams {
   priority?: number;
   limit?: number;
   offset?: number;
+  search?: string;
 }

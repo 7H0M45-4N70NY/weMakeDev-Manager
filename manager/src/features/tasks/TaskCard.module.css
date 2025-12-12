@@ -124,6 +124,27 @@
   padding-top: 0.75rem;
 }
 
+.startButton {
+  padding: 0.5rem 1rem;
+  background-color: #3b82f6;
+  color: white;
+  border: none;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  font-weight: 500;
+  font-size: 0.875rem;
+  transition: background-color 0.2s;
+}
+
+.startButton:hover:not(:disabled) {
+  background-color: #2563eb;
+}
+
+.startButton:disabled {
+  background-color: #d1d5db;
+  cursor: not-allowed;
+}
+
 .completeButton {
   padding: 0.5rem 1rem;
   background-color: #10b981;
