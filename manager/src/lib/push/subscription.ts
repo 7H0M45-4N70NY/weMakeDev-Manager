@@ -51,7 +51,8 @@ export async function subscribeToPush(): Promise<{
 
       subscription = await registration.pushManager.subscribe({
         userVisibleOnly: true,
-        applicationServerKey: urlBase64ToUint8Array(vapidPublicKey),
+        // PushManager expects a BufferSource; pass the Uint8Array and assert to BufferSource for TS.
+        applicationServerKey: urlBase64ToUint8Array(vapidPublicKey) as BufferSource,
       });
     }
 

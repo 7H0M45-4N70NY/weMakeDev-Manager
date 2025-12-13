@@ -124,7 +124,7 @@ export function TaskList({ filter: initialFilter, refreshKey = 0 }: TaskListProp
       {error && (
         <div className={styles.error}>
           <p>{error}</p>
-          <button onClick={fetchTasks} className={styles.retryButton}>
+          <button onClick={() => fetchTasks(false)} className={styles.retryButton}>
             Try Again
           </button>
         </div>
