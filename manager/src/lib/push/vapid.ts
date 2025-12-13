@@ -20,7 +20,7 @@ export interface PushPayload {
   body: string;
   icon?: string;
   badge?: string;
-  data?: any;
+  data?: Record<string, unknown>;
   actions?: Array<{
     action: string;
     title: string;
@@ -39,11 +39,12 @@ export async function sendPushNotification(
       JSON.stringify(payload)
     );
     return { success: true };
-  } catch (error: any) {
+  } catch (error: unknown) {
+    const err = error as { statusCode?: number; message?: string };
     console.error('Error sending push notification:', error);
     
     // Handle expired subscription
-    if (error.statusCode === 410) {
+    if (err.statusCode === 410) {
       return { 
         success: false, 
         error: 'Subscription expired' 
@@ -52,7 +53,7 @@ export async function sendPushNotification(
     
     return { 
       success: false, 
-      error: error.message 
+      error: err.message || 'Unknown error'
     };
   }
 }

@@ -62,7 +62,7 @@ export async function triggerIngestionFlow(
   if (!config) {
     // In development without Kestra, return mock response
     console.warn('[Kestra] Not configured, using mock mode');
-    return mockTriggerIngestionFlow(input);
+    return mockTriggerIngestionFlow();
   }
 
   const response = await fetch(
@@ -90,9 +90,7 @@ export async function triggerIngestionFlow(
 /**
  * Mock implementation for development without Kestra
  */
-async function mockTriggerIngestionFlow(
-  input: KestraWorkflowInput
-): Promise<KestraExecutionResponse> {
+async function mockTriggerIngestionFlow(): Promise<KestraExecutionResponse> {
   // Simulate network delay
   await new Promise(resolve => setTimeout(resolve, 100));
 

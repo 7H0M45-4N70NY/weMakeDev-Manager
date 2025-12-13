@@ -31,8 +31,8 @@ const PRIORITY_PATTERNS = {
   low: /\b(low priority|low|whenever|someday|maybe)\b/i,
 };
 
-// Time patterns to extract from title
-const TIME_PATTERN = /\b(at\s+)?(\d{1,2}(?::\d{2})?\s*(?:am|pm)?)\b/i;
+// Time patterns to extract from title (reserved for future use)
+// const TIME_PATTERN = /\b(at\s+)?(\d{1,2}(?::\d{2})?\s*(?:am|pm)?)\b/i;
 
 /**
  * Calculate deadline date from keyword
@@ -93,7 +93,7 @@ function extractDeadline(text: string): { deadline?: string; cleanedText: string
   let cleanedText = text;
 
   // Check each pattern
-  for (const [key, pattern] of Object.entries(DEADLINE_PATTERNS)) {
+  for (const [, pattern] of Object.entries(DEADLINE_PATTERNS)) {
     const match = text.match(pattern);
     if (match) {
       deadline = calculateDeadline(match[0]);
