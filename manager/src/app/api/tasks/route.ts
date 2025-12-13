@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getUser } from '@/lib/auth';
 import { getTasksByUser, createTask } from '@/lib/db/tasks';
-import { CreateTaskInput, TaskQueryParams } from '@/types/task';
 import { successResponse, errorResponse } from '@/lib/utils/apiResponse';
+import { TaskStatus } from '@/types/task';
 import { z } from 'zod';
 
 const createTaskSchema = z.object({
@@ -21,8 +21,13 @@ export async function GET(request: NextRequest) {
 
     // Parse query parameters
     const searchParams = request.nextUrl.searchParams;
-    const params: TaskQueryParams = {
-      status: (searchParams.get('status') as any) || undefined,
+    const statusParam = searchParams.get('status');
+    const status = statusParam && ['pending', 'in_progress', 'completed', 'cancelled'].includes(statusParam)
+      ? (statusParam as TaskStatus)
+      : undefined;
+    
+    const params = {
+      status,
       priority: searchParams.get('priority')
         ? parseInt(searchParams.get('priority')!)
         : undefined,

@@ -64,7 +64,7 @@ export function TaskList({ filter: initialFilter, refreshKey = 0 }: TaskListProp
 
   useEffect(() => {
     fetchTasks(true);
-  }, [activeFilter, searchQuery, refreshKey]);
+  }, [activeFilter, searchQuery, refreshKey, fetchTasks]);
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();

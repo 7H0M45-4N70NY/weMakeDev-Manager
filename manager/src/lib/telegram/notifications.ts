@@ -57,11 +57,12 @@ export async function sendTelegramNotification(
     });
 
     return { success: true };
-  } catch (error: any) {
+  } catch (error: unknown) {
+    const err = error as { message?: string };
     console.error('Error sending Telegram notification:', error);
     return { 
       success: false, 
-      error: error.message 
+      error: err.message || 'Unknown error'
     };
   }
 }

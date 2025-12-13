@@ -69,9 +69,10 @@ export async function subscribeToPush(): Promise<{
     }
 
     return { success: true };
-  } catch (error: any) {
+  } catch (error: unknown) {
+    const err = error as { message?: string };
     console.error('Error subscribing to push:', error);
-    return { success: false, error: error.message };
+    return { success: false, error: err.message || 'Unknown error' };
   }
 }
 
@@ -108,9 +109,10 @@ export async function unsubscribeFromPush(): Promise<{
     }
 
     return { success: true };
-  } catch (error: any) {
+  } catch (error: unknown) {
+    const err = error as { message?: string };
     console.error('Error unsubscribing from push:', error);
-    return { success: false, error: error.message };
+    return { success: false, error: err.message || 'Unknown error' };
   }
 }
 

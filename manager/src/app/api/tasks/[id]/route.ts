@@ -1,7 +1,6 @@
 import { NextResponse } from 'next/server';
 import { getUser } from '@/lib/auth';
 import { getTaskById, updateTask, deleteTask } from '@/lib/db/tasks';
-import { UpdateTaskInput } from '@/types/task';
 import { successResponse, errorResponse } from '@/lib/utils/apiResponse';
 import { z } from 'zod';
 
@@ -26,8 +25,9 @@ export async function GET(
     const { id } = await params;
     const task = await getTaskById(id, user.id);
     return NextResponse.json(successResponse(task));
-  } catch (error: any) {
-    if (error?.code === 'PGRST116') {
+  } catch (error: unknown) {
+    const err = error as { code?: string };
+    if (err?.code === 'PGRST116') {
       return NextResponse.json(errorResponse('Task not found'), { status: 404 });
     }
     console.error('Error fetching task:', error);
@@ -54,12 +54,13 @@ export async function PUT(
 
     const task = await updateTask(id, user.id, input);
     return NextResponse.json(successResponse(task));
-  } catch (error: any) {
+  } catch (error: unknown) {
     if (error instanceof z.ZodError) {
       const message = error.issues[0]?.message || 'Validation error';
       return NextResponse.json(errorResponse(message), { status: 400 });
     }
-    if (error?.code === 'PGRST116') {
+    const err = error as { code?: string };
+    if (err?.code === 'PGRST116') {
       return NextResponse.json(errorResponse('Task not found'), { status: 404 });
     }
     console.error('Error updating task:', error);
@@ -88,8 +89,9 @@ export async function DELETE(
     return NextResponse.json(
       successResponse({ message: 'Task deleted successfully' })
     );
-  } catch (error: any) {
-    if (error?.code === 'PGRST116') {
+  } catch (error: unknown) {
+    const err = error as { code?: string };
+    if (err?.code === 'PGRST116') {
       return NextResponse.json(errorResponse('Task not found'), { status: 404 });
     }
     console.error('Error deleting task:', error);

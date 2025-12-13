@@ -11,8 +11,6 @@ const loginSchema = z.object({
   password: z.string().min(6, 'Password must be at least 6 characters'),
 });
 
-type LoginFormData = z.infer<typeof loginSchema>;
-
 interface LoginFormProps {
   isSignUp?: boolean;
 }
@@ -141,7 +139,7 @@ export function LoginForm({ isSignUp = false }: LoginFormProps) {
           </>
         ) : (
           <>
-            Don't have an account?{' '}
+            Don&apos;t have an account?{' '}
             <a href="/signup" className={styles.link}>
               Sign Up
             </a>

@@ -49,7 +49,7 @@ export function createInlineKeyboard(buttons: Array<{
 export async function sendMessage(
   chatId: number,
   text: string,
-  options?: any
+  options?: Record<string, unknown>
 ): Promise<boolean> {
   if (!bot) {
     console.error('Bot not initialized');
