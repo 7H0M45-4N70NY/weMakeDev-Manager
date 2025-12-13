@@ -9,7 +9,8 @@ const withPWA = require("@ducanh2912/next-pwa").default({
 const nextConfig = {
   reactCompiler: false,
 
-  turbopack: false,
+  // Silence Turbopack + webpack config clash; we force webpack via dev script.
+  turbopack: {},
 
   webpack: (config) => {
     config.watchOptions = {
